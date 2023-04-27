@@ -11,3 +11,6 @@ F74109016 資訊系大三 葉惟欣
 ## Explain the logic of your scheduler : (2%)
 ## Things you learned : (2%)
 ## Correct Format : (2%)
+
+## References : (Additional)
+Read Json file : https://medium.com/ml2b/a-guide-to-json-using-c-a48039124f3a
