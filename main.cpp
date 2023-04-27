@@ -92,12 +92,14 @@ int main(int argc,char * argv[])
     //Frame size
     //Calculate the maximum of execution time
     //the maximum of execution time 
-    /*
+    //TODO: find the maximum of execution time (check need to work)
+    /*******************
     int eMax = -1;
     for(int i = 0; i< pArr.size();i++){
         if(pArr[i].C > eMax) eMax = pArr[i].C;
     }
-    cout<<eMax<<endl;*/
+    cout<<eMax<<endl;
+    *******************/
     //find pArr[i].P's factor
     set<int> possiblefactor;
     for(int i = 0; i< pArr.size();i++){
