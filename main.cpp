@@ -44,10 +44,10 @@ int main(int argc,char * argv[])
         std::cerr << "Error parsing JSON: " << doc.GetParseError() << std::endl;
         return 1;
     }
- 
-    vector<struct periodic> pArr;
-    vector<struct aperiodic> aArr;
-    vector<struct sporadic> sArr;
+    // Record the task array
+    vector<struct periodic> pArr; //periodic task
+    vector<struct aperiodic> aArr;//aperiodic task
+    vector<struct sporadic> sArr; //sporadic task
 
     // Iterate over the array of objects
     rapidjson::Value::ConstValueIterator itr;
@@ -80,6 +80,7 @@ int main(int argc,char * argv[])
             }
         }
     }
+    // Just print the task array
     for(int i = 0; i< pArr.size();i++){
         cout << "P" << i << " " << pArr[i].P << " " << pArr[i].C << endl;
     }
@@ -91,10 +92,9 @@ int main(int argc,char * argv[])
     }
     //Frame size
     //Calculate the maximum of execution time
-    //the maximum of execution time 
     //TODO: find the maximum of execution time (check need to work)
     /*******************
-    int eMax = -1;
+    int eMax = -1;  //the maximum of execution time 
     for(int i = 0; i< pArr.size();i++){
         if(pArr[i].C > eMax) eMax = pArr[i].C;
     }
@@ -120,6 +120,7 @@ int main(int argc,char * argv[])
                 break;
         }
     }
+    // Just print the correct framesize need to consider later
     for(it = correctfactor.begin(); it != correctfactor.end(); it++){
         int frameSize = *it;
         cout<<frameSize<<endl;
