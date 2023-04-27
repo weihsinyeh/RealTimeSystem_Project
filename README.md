@@ -13,4 +13,5 @@ F74109016 資訊系大三 葉惟欣
 ## Correct Format : (2%)
 
 ## References : (Additional)
-Read Json file : https://medium.com/ml2b/a-guide-to-json-using-c-a48039124f3a
+Read Json file : https://medium.com/ml2b/a-guide-to-json-using-c-
+https://www.geeksforgeeks.org/how-to-parse-an-array-of-objects-in-cpp-using-rapidjson/

@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <set>
 using namespace std;
 struct periodic{
     int P,C;
@@ -14,7 +15,10 @@ struct aperiodic{
 struct sporadic{
     int A,C;
 };
-
+int gcd (int a,int b){
+    if(b == 0) return a;
+    else return gcd(b,a%b);
+}
 int main(int argc,char * argv[])
 {
     // Open the file
@@ -29,8 +33,7 @@ int main(int argc,char * argv[])
   
     // Read the file into a buffer
     char readBuffer[65536];
-    rapidjson::FileReadStream is(fp, readBuffer,
-                                 sizeof(readBuffer));
+    rapidjson::FileReadStream is(fp, readBuffer,sizeof(readBuffer));
   
     // Parse the JSON document
     rapidjson::Document doc;
@@ -38,14 +41,14 @@ int main(int argc,char * argv[])
   
     // Check for parse errors
     if (doc.HasParseError()) {
-        std::cerr << "Error parsing JSON: "
-                  << doc.GetParseError() << std::endl;
+        std::cerr << "Error parsing JSON: " << doc.GetParseError() << std::endl;
         return 1;
     }
  
     vector<struct periodic> pArr;
     vector<struct aperiodic> aArr;
     vector<struct sporadic> sArr;
+
     // Iterate over the array of objects
     rapidjson::Value::ConstValueIterator itr;
     for (itr = doc.Begin(); itr != doc.End(); ++itr) {
@@ -77,7 +80,6 @@ int main(int argc,char * argv[])
             }
         }
     }
-    
     for(int i = 0; i< pArr.size();i++){
         cout << "P" << i << " " << pArr[i].P << " " << pArr[i].C << endl;
     }
@@ -86,6 +88,39 @@ int main(int argc,char * argv[])
     }
     for(int i = 0; i< sArr.size();i++){
         cout << "S" << i << " " << sArr[i].A << " " << sArr[i].C << endl;
+    }
+    //Frame size
+    //Calculate the maximum of execution time
+    //the maximum of execution time 
+    /*
+    int eMax = -1;
+    for(int i = 0; i< pArr.size();i++){
+        if(pArr[i].C > eMax) eMax = pArr[i].C;
+    }
+    cout<<eMax<<endl;*/
+    //find pArr[i].P's factor
+    set<int> possiblefactor;
+    for(int i = 0; i< pArr.size();i++){
+        for(int j = 1; j <= pArr[i].P; j++){
+            if(pArr[i].P % j == 0 ) possiblefactor.insert(j);
+        }
+    }
+    //Check deadline
+    //iterator the set
+    set<int>::iterator it;
+    set<int> correctfactor;
+    for(it = possiblefactor.begin(); it != possiblefactor.end(); it++){
+        int frameSize = *it;
+        for(int i = 0; i< pArr.size();i++){
+            if(2 * frameSize - gcd(frameSize,pArr[i].P)<= pArr[i].P)
+                correctfactor.insert(frameSize);
+            else
+                break;
+        }
+    }
+    for(it = correctfactor.begin(); it != correctfactor.end(); it++){
+        int frameSize = *it;
+        cout<<frameSize<<endl;
     }
     return 0;
 }
