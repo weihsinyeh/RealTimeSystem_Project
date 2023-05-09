@@ -183,12 +183,10 @@ int main(int argc,char * argv[])
         cout<<frameSize<<endl;
     }
 
-    //sort sporaidic job with arrival time
-    sort(sArr.begin(),sArr.end());
+    
 
-    //sort periodic job by the early deadline first
-    sort(pArr.begin(),pArr.end());
-
+    // Schedule periodic job in HyperPerioid
+    // Initialize HyperPeriodJob array every time moment is idle
     vector<struct currentJob> HyperPeriodJob;
     for(int i=0;i<hyperperiod;i++){
         struct currentJob newJob;
@@ -197,35 +195,38 @@ int main(int argc,char * argv[])
         HyperPeriodJob.push_back(newJob);
     }
 
-    int indexInpArr = 0;
-    int currentDeadline=INT_MAX;
-    int currentJob = -1;
+    // I schedule the shortest period(earliest deadline) job first
+    // Thus, I sort periodic job by the early deadline first
+    sort(pArr.begin(),pArr.end());
 
     for(int indexInpArr=0;indexInpArr<pArr.size();indexInpArr++){
         bool isAccept = true;
-        for(int j =0;j<j+pArr[indexInpArr].P;j+=pArr[indexInpArr].P)
+        //first check the perioidic task can be accept when every time it arrive
+        for(int j =0;j<hyperperiod;j+=pArr[indexInpArr].P)
         {
             int curTime = j;
             int executionTime = 0;
             while(executionTime < pArr[indexInpArr].C){
-                curTime++;
-                if(HyperPeriodJob[j].JobType == IDLE) continue;
-                executionTime++;
                 if(curTime > j + pArr[indexInpArr].P){
                     isAccept = false;
                     break;
                 }
+                curTime++;
+                if(HyperPeriodJob[j].JobType != IDLE) continue;
+                executionTime++;
             }
         }
+        //If the periodic task can be accept when every time it arrive
         if(isAccept){
             allJobArr[pArr[indexInpArr].ID].Isaccept = true;
+            // record the job in HyperPeriodJob array
             for(int j =0;j<j+pArr[indexInpArr].P;j+=pArr[indexInpArr].P)
             {
                 int curTime = j;
                 int executionTime = 0;
                 while(executionTime < pArr[indexInpArr].C){
                     curTime++;
-                    if(HyperPeriodJob[j].JobType == IDLE) continue;
+                    if(HyperPeriodJob[j].JobType != IDLE) continue;
                     executionTime++;  
                     HyperPeriodJob[j].JobType = PERIODIC;
                     HyperPeriodJob[j].ID = pArr[indexInpArr].ID;
@@ -236,5 +237,12 @@ int main(int argc,char * argv[])
             allJobArr[pArr[indexInpArr].ID].Isaccept = false;
         }
     }
+    //TODO: schedule sporadic job
+    //sort sporaidic job with arrival time
+    sort(sArr.begin(),sArr.end());
+    //TODO: schedule aperiodic job
+    //sort aperiodic job with arrival time
+    sort(aArr.begin(),aArr.end());
+
     return 0;
 }
