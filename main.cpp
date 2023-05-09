@@ -1,23 +1,57 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
-  
+#include <algorithm>
 #include <cstdio>
 #include <iostream>
 #include <vector>
 #include <set>
 using namespace std;
+enum JobType{
+    PERIODIC,
+    APERIODIC,
+    SPORADIC,
+    IDLE
+};
+class Job{
+    public:
+        int ID;
+        JobType type;
+        int P,C,A;
+        int nextArrivalTime;
+        bool Isaccept;  
+};
+struct currentJob{
+    int ID;
+    int JobType;
+};
 struct periodic{
     int P,C;
+    bool Isaccept;
 };
 struct aperiodic{
     int A,C;
+    bool Isaccept;
 };
 struct sporadic{
     int A,C;
+    bool Isaccept;
 };
+bool operator<(Job const & a,Job const & b){
+    if(a.type == SPORADIC && b.type == SPORADIC) //Sporadic job sort by arrival time
+        return a.A < b.A;
+    if(a.type == PERIODIC && b.type == PERIODIC) //Periodic job sort by deadline
+        return a.P < b.P;
+    else{
+        return a.A < b.A;                        //Sparadic job sort by arrival time
+    }
+}
+
 int gcd (int a,int b){
     if(b == 0) return a;
     else return gcd(b,a%b);
+}
+int lca(int a,int b){
+    return a*b/gcd(a,b);
 }
 int main(int argc,char * argv[])
 {
@@ -45,42 +79,58 @@ int main(int argc,char * argv[])
         return 1;
     }
     // Record the task array
-    vector<struct periodic> pArr; //periodic task
-    vector<struct aperiodic> aArr;//aperiodic task
-    vector<struct sporadic> sArr; //sporadic task
-
+    vector<Job> pArr; //periodic task
+    vector<Job> aArr;//aperiodic task
+    vector<Job> sArr; //sporadic task
+    vector<Job> allJobArr;
     // Iterate over the array of objects
     rapidjson::Value::ConstValueIterator itr;
+    int idCount = 0;
     for (itr = doc.Begin(); itr != doc.End(); ++itr) {
         if(itr->GetObject()["Periodic"].IsArray()){
             rapidjson::Value::ConstValueIterator itr2;
             for (itr2 = itr->GetObject()["Periodic"].GetArray().Begin(); itr2 != itr->GetObject()["Periodic"].GetArray().End(); ++itr2){
-                struct periodic newPeriodic;
-                newPeriodic.P = itr2->GetObject()["P"].GetInt();
-                newPeriodic.C = itr2->GetObject()["C"].GetInt();
-                pArr.push_back(newPeriodic);
+                Job newJob;
+                newJob.ID = idCount++;
+                newJob.type = PERIODIC;
+                newJob.A = 0;
+                newJob.P = itr2->GetObject()["P"].GetInt();
+                newJob.C = itr2->GetObject()["C"].GetInt();
+                allJobArr.push_back(newJob);
+                if(newJob.P <= newJob.C) //reject directily (when P < C)
+                    newJob.Isaccept = false;
+                else
+                    pArr.push_back(newJob);
+                
             }
         }
         if(itr->GetObject()["Aperiodic"].IsArray()){
             rapidjson::Value::ConstValueIterator itr2;
             for (itr2 = itr->GetObject()["Aperiodic"].GetArray().Begin(); itr2 != itr->GetObject()["Aperiodic"].GetArray().End(); ++itr2){
-                struct aperiodic newAperiodic;
-                newAperiodic.A = itr2->GetObject()["A"].GetInt();
-                newAperiodic.C = itr2->GetObject()["C"].GetInt();
-                aArr.push_back(newAperiodic);
+                Job newJob;
+                newJob.ID = idCount++;
+                newJob.type = APERIODIC;
+                newJob.A = itr2->GetObject()["A"].GetInt();
+                newJob.C = itr2->GetObject()["C"].GetInt();
+                allJobArr.push_back(newJob);
+                aArr.push_back(newJob);
             }
         }
         if(itr->GetObject()["Sporadic"].IsArray()){
             rapidjson::Value::ConstValueIterator itr2;
             for (itr2 = itr->GetObject()["Sporadic"].GetArray().Begin(); itr2 != itr->GetObject()["Sporadic"].GetArray().End(); ++itr2){
-                struct sporadic newSporadic;
-                newSporadic.A = itr2->GetObject()["A"].GetInt();
-                newSporadic.C = itr2->GetObject()["C"].GetInt();
-                sArr.push_back(newSporadic);
+                Job newJob;
+                newJob.ID = idCount++;
+                newJob.type = SPORADIC;
+                newJob.A = itr2->GetObject()["A"].GetInt();
+                newJob.C = itr2->GetObject()["C"].GetInt();
+                allJobArr.push_back(newJob);
+                sArr.push_back(newJob);
             }
         }
     }
-    // Just print the task array
+
+    // Test : Just print the task array
     for(int i = 0; i< pArr.size();i++){
         cout << "P" << i << " " << pArr[i].P << " " << pArr[i].C << endl;
     }
@@ -90,24 +140,25 @@ int main(int argc,char * argv[])
     for(int i = 0; i< sArr.size();i++){
         cout << "S" << i << " " << sArr[i].A << " " << sArr[i].C << endl;
     }
-    //Frame size
-    //Calculate the maximum of execution time
-    //TODO: find the maximum of execution time (check need to work)
-    /*******************
-    int eMax = -1;  //the maximum of execution time 
-    for(int i = 0; i< pArr.size();i++){
+    /** Step 1 : Hyperperioid **/
+    int hyperperiod = 1;
+    for(int i = 0;i< aArr.size();i++)
+        hyperperiod = lca(hyperperiod,pArr[i].P);
+    /***********************************************************/
+    /** Step 2 : Caluculate appropriate Frame size **/
+    //Constraint 1 : Calculate the maximum of execution time
+    int eMax = -1;  
+    for(int i = 0; i< pArr.size();i++) 
         if(pArr[i].C > eMax) eMax = pArr[i].C;
-    }
     cout<<eMax<<endl;
-    *******************/
-    //find pArr[i].P's factor
+    //Constraint 2 : Find pArr[i].P's factor
     set<int> possiblefactor;
     for(int i = 0; i< pArr.size();i++){
         for(int j = 1; j <= pArr[i].P; j++){
             if(pArr[i].P % j == 0 ) possiblefactor.insert(j);
         }
     }
-    //Check deadline
+    //Constraint 3 : Check deadline
     //iterator the set
     set<int>::iterator it;
     set<int> correctfactor;
@@ -120,10 +171,74 @@ int main(int argc,char * argv[])
                 break;
         }
     }
-    // Just print the correct framesize need to consider later
+    /***********************************************************/
+    
+
+
+    // Test : Just print the correct framesize need to consider later
+    int maxFrameSize = -1;
     for(it = correctfactor.begin(); it != correctfactor.end(); it++){
         int frameSize = *it;
+        if(frameSize > maxFrameSize) maxFrameSize = frameSize;
         cout<<frameSize<<endl;
+    }
+
+    //sort sporaidic job with arrival time
+    sort(sArr.begin(),sArr.end());
+
+    //sort periodic job by the early deadline first
+    sort(pArr.begin(),pArr.end());
+
+    vector<struct currentJob> HyperPeriodJob;
+    for(int i=0;i<hyperperiod;i++){
+        struct currentJob newJob;
+        newJob.ID = -1;
+        newJob.JobType = IDLE;
+        HyperPeriodJob.push_back(newJob);
+    }
+
+    int indexInpArr = 0;
+    int currentDeadline=INT_MAX;
+    int currentJob = -1;
+
+    for(int indexInpArr=0;indexInpArr<pArr.size();indexInpArr++){
+        bool isAccept = true;
+        for(int j =0;j<j+pArr[indexInpArr].P;j+=pArr[indexInpArr].P)
+        {
+            int curTime = j;
+            int executionTime = 0;
+            while(executionTime < pArr[indexInpArr].C){
+                curTime++;
+                if(HyperPeriodJob[j].JobType == IDLE) continue;
+                executionTime++;
+                if(curTime > j + pArr[indexInpArr].P){
+                    isAccept = false;
+                    break;
+                }
+            }
+        }
+        if(isAccept){
+            allJobArr[pArr[indexInpArr].ID].Isaccept = true;
+            for(int j =0;j<j+pArr[indexInpArr].P;j+=pArr[indexInpArr].P)
+            {
+                int curTime = j;
+                int executionTime = 0;
+                while(executionTime < pArr[indexInpArr].C){
+                    curTime++;
+                    if(HyperPeriodJob[j].JobType == IDLE) continue;
+                    executionTime++;  
+                    HyperPeriodJob[j].JobType = PERIODIC;
+                    HyperPeriodJob[j].ID = pArr[indexInpArr].ID;
+                }
+            }
+        }
+        else{
+            allJobArr[pArr[indexInpArr].ID].Isaccept = false;
+        }
+    }
+
+    while(1){
+
     }
     return 0;
 }
