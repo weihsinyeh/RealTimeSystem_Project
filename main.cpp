@@ -236,9 +236,5 @@ int main(int argc,char * argv[])
             allJobArr[pArr[indexInpArr].ID].Isaccept = false;
         }
     }
-
-    while(1){
-
-    }
     return 0;
 }
