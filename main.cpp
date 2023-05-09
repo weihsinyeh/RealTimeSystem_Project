@@ -142,7 +142,7 @@ int main(int argc,char * argv[])
     }
     /** Step 1 : Hyperperioid **/
     int hyperperiod = 1;
-    for(int i = 0;i< aArr.size();i++)
+    for(int i = 0;i< pArr.size();i++)
         hyperperiod = lca(hyperperiod,pArr[i].P);
     /***********************************************************/
     /** Step 2 : Caluculate appropriate Frame size **/
@@ -194,7 +194,6 @@ int main(int argc,char * argv[])
         newJob.JobType = IDLE;
         HyperPeriodJob.push_back(newJob);
     }
-
     // I schedule the shortest period(earliest deadline) job first
     // Thus, I sort periodic job by the early deadline first
     sort(pArr.begin(),pArr.end());
@@ -204,7 +203,7 @@ int main(int argc,char * argv[])
         //first check the perioidic task can be accept when every time it arrive
         for(int j =0;j<hyperperiod;j+=pArr[indexInpArr].P)
         {
-            int curTime = j;
+            int curTime = j-1;
             int executionTime = 0;
             while(executionTime < pArr[indexInpArr].C){
                 if(curTime > j + pArr[indexInpArr].P){
@@ -212,7 +211,7 @@ int main(int argc,char * argv[])
                     break;
                 }
                 curTime++;
-                if(HyperPeriodJob[j].JobType != IDLE) continue;
+                if(HyperPeriodJob[curTime].JobType != IDLE) continue;
                 executionTime++;
             }
         }
@@ -220,13 +219,15 @@ int main(int argc,char * argv[])
         if(isAccept){
             allJobArr[pArr[indexInpArr].ID].Isaccept = true;
             // record the job in HyperPeriodJob array
-            for(int j =0;j<j+pArr[indexInpArr].P;j+=pArr[indexInpArr].P)
+            for(int j =0;j<hyperperiod;j+=pArr[indexInpArr].P)
             {
-                int curTime = j;
+
                 int executionTime = 0;
+                int curTime = j-1;
                 while(executionTime < pArr[indexInpArr].C){
+
                     curTime++;
-                    if(HyperPeriodJob[j].JobType != IDLE) continue;
+                    if(HyperPeriodJob[curTime].JobType != IDLE) continue;
                     executionTime++;  
                     HyperPeriodJob[j].JobType = PERIODIC;
                     HyperPeriodJob[j].ID = pArr[indexInpArr].ID;
