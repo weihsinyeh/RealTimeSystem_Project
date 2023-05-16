@@ -88,9 +88,13 @@ int main(int argc,char * argv[])
     rapidjson::Value::ConstValueIterator itr;
     int indexOfTaskGroup = 0;
     int idCount = 0;
-    cout<<doc.Size()<<endl;             //MUST : #Schedules: number of Schedules, same as length of input vector
+    cout<<"number of schedule : "<<doc.Size()<<endl;             //MUST : #Schedules: number of Schedules, same as length of input vector
     for (itr = doc.Begin(); itr != doc.End(); ++itr) {
-        cout<<indexOfTaskGroup++<<endl; //MUST : #TaskGroup: index of TaskGroup, starting from 0
+        pArr.clear();
+        aArr.clear();
+        sArr.clear();
+        allJobArr.clear();
+        cout<<"index of taskgroup : "<<indexOfTaskGroup++<<endl; //MUST : #TaskGroup: index of TaskGroup, starting from 0
         if(itr->GetObject()["Periodic"].IsArray()){
             rapidjson::Value::ConstValueIterator itr2;
             for (itr2 = itr->GetObject()["Periodic"].GetArray().Begin(); itr2 != itr->GetObject()["Periodic"].GetArray().End(); ++itr2){
@@ -136,12 +140,14 @@ int main(int argc,char * argv[])
         }
 
         // Test : Just print the task array
+        cout<<"Print the task array : "<<endl;
         for(int i = 0; i< pArr.size();i++)
             cout << "P" << i << " " << pArr[i].P << " " << pArr[i].C << endl;
         for(int i = 0; i< aArr.size();i++)
             cout << "A" << i << " " << aArr[i].A << " " << aArr[i].C << endl;
         for(int i = 0; i< sArr.size();i++)
             cout << "S" << i << " " << sArr[i].A << " " << sArr[i].C << endl;
+
         /** Step 1 : Hyperperioid **/ //V
         int hyperperiod = 1;
         for(int i = 0;i< pArr.size();i++)
@@ -152,7 +158,7 @@ int main(int argc,char * argv[])
         int eMax = -1;  
         for(int i = 0; i< pArr.size();i++) 
             if(pArr[i].C > eMax) eMax = pArr[i].C;
-        cout<<eMax<<endl;
+        cout<<"maximum execution time : "<<eMax<<endl;
         //Constraint 2 : Find pArr[i].P's factor
         set<int> possiblefactor;
         for(int i = 0; i< pArr.size();i++){
@@ -182,6 +188,7 @@ int main(int argc,char * argv[])
 
 
         // Test : Just print the correct framesize need to consider later
+        cout<<"possible frameSize : "<<endl;
         int maxFrameSize = -1;
         for(it = correctfactor.begin(); it != correctfactor.end(); it++){
             int frameSize = *it;
@@ -191,7 +198,7 @@ int main(int argc,char * argv[])
 
         // Schedule periodic job in HyperPerioid
         // Initialize HyperPeriodJob array every time moment is idle
-        vector<struct currentJob> HyperPeriodJob;
+        vector<struct currentJob> HyperPeriodJob; // 50 element
         for(int i=0;i<hyperperiod;i++){
             struct currentJob newJob;
             newJob.ID = -1;
@@ -240,8 +247,13 @@ int main(int argc,char * argv[])
         }
         //TODO: schedule sporadic job
         //sort sporaidic job with arrival time
+        // S : A - 1 C - 6  
+        // S : A - 2 C - 1
         sort(sArr.begin(),sArr.end());
         //TODO: schedule aperiodic job W
+        // for(int i = 0; i< 100; i ++){
+        //     if( HyperPeriodJob[i % hyperperiod]. JobType )
+        // }
         //sort aperiodic job with arrival time
         sort(aArr.begin(),aArr.end());
     }
