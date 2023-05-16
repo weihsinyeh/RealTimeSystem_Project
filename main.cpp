@@ -282,11 +282,14 @@ int main(int argc, char *argv[])
                     int curTime = j;
                     while (executionTime < pArr[indexInpArr].C)
                     {
-                        if (HyperPeriodJob[curTime++].JobType != IDLE)
+                        if (HyperPeriodJob[curTime].JobType != IDLE)
+                        {
+                            curTime++;
                             continue;
+                        }
                         executionTime++;
-                        HyperPeriodJob[j].JobType = PERIODIC;
-                        HyperPeriodJob[j].ID = pArr[indexInpArr].ID;
+                        HyperPeriodJob[curTime].JobType = PERIODIC;
+                        HyperPeriodJob[curTime].ID = pArr[indexInpArr].ID;
                     }
                 }
             }
