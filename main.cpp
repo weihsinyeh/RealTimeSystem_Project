@@ -182,24 +182,28 @@ int main(int argc, char *argv[])
 
         /** Step 1 : Hyperperioid **/ // V
         int hyperperiod = 1;
-        for (int i = 0; i < pArr.size(); i++)
-            hyperperiod = lca(hyperperiod, pArr[i].P);
+        for (int i = 0; i < pArr.size(); i++){
+            if(pArr[i].Isaccept)
+                hyperperiod = lca(hyperperiod, pArr[i].P);
+        }
         /***********************************************************/
         /** Step 2 : Caluculate appropriate Frame size **/
         // Constraint 1 : Calculate the maximum of execution time //V
         int eMax = -1;
         for (int i = 0; i < pArr.size(); i++)
-            if (pArr[i].C > eMax)
+            if (pArr[i].Isaccept && pArr[i].C > eMax)
                 eMax = pArr[i].C;
         cout << "maximum execution time : " << eMax << endl;
         // Constraint 2 : Find pArr[i].P's factor
         set<int> possiblefactor;
         for (int i = 0; i < pArr.size(); i++)
         {
-            for (int j = 1; j <= pArr[i].P; j++)
-            {
-                if (pArr[i].P % j == 0)
-                    possiblefactor.insert(j);
+            if(pArr[i].Isaccept){
+                for (int j = 1; j <= pArr[i].P; j++)
+                {
+                    if (pArr[i].P % j == 0)
+                        possiblefactor.insert(j);
+                }
             }
         }
         // Constraint 3 : Check deadline
@@ -213,6 +217,9 @@ int main(int argc, char *argv[])
             bool framesizeAccept = true;
             for (int i = 0; i < pArr.size(); i++)
             {
+                if(!pArr[i].Isaccept){ //if the task is rejected in first then we don't consider it
+                    continue;
+                }
                 if (!(2 * frameSize - gcd(frameSize, pArr[i].P) <= pArr[i].P)) // t'(50) - t(0) >= gcd (f(50),pi(50))
                     framesizeAccept = false;
             }
@@ -252,6 +259,7 @@ int main(int argc, char *argv[])
 
         for (int indexInpArr = 0; indexInpArr < pArr.size(); indexInpArr++)
         {
+            if(!pArr[indexInpArr].Isaccept) continue;
             bool isAccept = true;
             // first check the perioidic task can be accept when every time it arrive
             for (int j = 0; j < hyperperiod; j += pArr[indexInpArr].P)
