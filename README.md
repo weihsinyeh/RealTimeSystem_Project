@@ -10,6 +10,9 @@ F74109016 資訊系大三 葉惟欣
 ## Document your progress, thought process : (2%)
 ## Explain the logic of your scheduler : (2%)
 ## Things you learned : (2%)
+
+### Problem we encounter :
+
 ## Correct Format : (2%)
 
 ## References : (Additional)
