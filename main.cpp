@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     rapidjson::Value::ConstValueIterator itr;
     int indexOfTaskGroup = 0;
     int idCount = 0;
-    cout << "number of schedule : " << doc.Size() << endl; // MUST : #Schedules: number of Schedules, same as length of input vector
+    cout << doc.Size() << endl; // MUST : #Schedules: number of Schedules, same as length of input vector
     for (itr = doc.Begin(); itr != doc.End(); ++itr)
     {
         pArr.clear();
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
         sArr.clear();
         allJobArr.clear();
         used_time = vector<bool>(100, false);
-        cout << "index of taskgroup : " << indexOfTaskGroup++ << endl; // MUST : #TaskGroup: index of TaskGroup, starting from 0
+        cout << indexOfTaskGroup++ << endl; // MUST : #TaskGroup: index of TaskGroup, starting from 0
         idCount = 0;
         if (itr->GetObject()["Periodic"].IsArray())
         {
