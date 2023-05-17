@@ -19,6 +19,7 @@ public:
     int ID;
     JobType type;
     int P, C, A;
+    int complete_time;
     bool Isaccept;
 };
 struct currentJob
@@ -34,6 +35,10 @@ bool operator<(Job const &a, Job const &b)
         return a.P < b.P;
     else
         return a.A < b.A; // Aparadic job sort by arrival time
+}
+bool ArrTimeInceasing(Job const &a, Job const &b)
+{
+    return a.A < b.A;
 }
 
 int gcd(int a, int b)
@@ -108,6 +113,7 @@ int main(int argc, char *argv[])
                 newJob.C = itr2->GetObject()["C"].GetInt(); // deadline = p next arrival time
                 newJob.A = 0;
                 newJob.Isaccept = false;
+                newJob.complete_time = newJob.A + newJob.C;
                 allJobArr.push_back(newJob);
                 if (newJob.P < newJob.C) // reject directily (when P < C)
                 {
@@ -134,6 +140,7 @@ int main(int argc, char *argv[])
                 newJob.C = itr2->GetObject()["C"].GetInt(); // deadline = a+c
                 newJob.A = itr2->GetObject()["A"].GetInt();
                 newJob.Isaccept = false;
+                newJob.complete_time = newJob.A + newJob.C;
                 allJobArr.push_back(newJob);
                 aArr.push_back(newJob);
             }
@@ -151,6 +158,7 @@ int main(int argc, char *argv[])
                 newJob.C = itr2->GetObject()["C"].GetInt(); // deadline = a+c
                 newJob.A = itr2->GetObject()["A"].GetInt();
                 newJob.Isaccept = false;
+                newJob.complete_time = newJob.A + newJob.C;
                 allJobArr.push_back(newJob);
                 sArr.push_back(newJob);
             }
@@ -362,11 +370,14 @@ int main(int argc, char *argv[])
             int start = aArr[i].A, exec_time = aArr[i].C;
             int time_remaining = 0;
             /*check enough time for using*/
-            for (int j = start; j < 100; j++)
+            int j;
+            for (j = start; j < 100; j++)
             {
                 if (!used_time[j])
                     time_remaining++;
             }
+            /* modify complete time by soft deadline */
+            aArr[i].complete_time = j;
             if (time_remaining >= exec_time)
             {
                 int already_used = 0;
@@ -393,6 +404,43 @@ int main(int argc, char *argv[])
             }
         }
 
+        /* output format */
+        sort(allJobArr.begin(), allJobArr.end(), ArrTimeInceasing);
+        // reject complete output
+        int Arate[4] = {0};
+        for (int i = 0; i < allJobArr.size(); i++)
+        {
+            if (!allJobArr[i].Isaccept)
+                Arate[allJobArr[i].type]++;
+            if (allJobArr[i].Isaccept)
+            {
+                if (allJobArr[i].type == PERIODIC)
+                {
+                    cout << "P " << allJobArr[i].ID << " " << allJobArr[i].A << " " << allJobArr[i].complete_time << " Complete\n";
+                }
+                else if (allJobArr[i].type == SPORADIC)
+                {
+                    cout << "S " << allJobArr[i].ID << " " << allJobArr[i].A << " " << allJobArr[i].complete_time << " Complete\n";
+                }
+                else if (allJobArr[i].type == APERIODIC)
+                {
+                    cout << "A " << allJobArr[i].ID << " " << allJobArr[i].A << " " << allJobArr[i].complete_time << " Complete\n";
+                }
+            }
+        }
+        // accept rate output
+        if (pArr.size() != 0)
+            cout << (float)Arate[0] / pArr.size() << " ";
+        else
+            cout << "0.0 ";
+        if (aArr.size() != 0)
+            cout << (float)Arate[1] / aArr.size() << " ";
+        else
+            cout << "0.0 ";
+        if (sArr.size() != 0)
+            cout << (float)Arate[2] / sArr.size() << " ";
+        else
+            cout << "0.0 ";
         cout << endl;
     }
     cout << "-1" << endl;
