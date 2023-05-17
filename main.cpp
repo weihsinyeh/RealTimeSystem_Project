@@ -110,7 +110,10 @@ int main(int argc, char *argv[])
                 newJob.Isaccept = false;
                 allJobArr.push_back(newJob);
                 if (newJob.P < newJob.C) // reject directily (when P < C)
+                {
                     newJob.Isaccept = false;
+                    cout << "P " << idCount - 1 << " -1 -1 Reject\n";
+                }
                 else
                 {
                     newJob.Isaccept = true;
@@ -342,6 +345,8 @@ int main(int argc, char *argv[])
                 /* IsAccept flag down */
                 sArr[i].Isaccept = false;
                 allJobArr[pArr.size() + aArr.size() + i].Isaccept = false;
+                /* output reject */
+                cout << "S " << sArr[i].ID << " -1 -1 Reject\n";
             }
         }
 
@@ -383,6 +388,8 @@ int main(int argc, char *argv[])
                 /* IsAccept flag down */
                 aArr[i].Isaccept = false;
                 allJobArr[pArr.size() + i].Isaccept = false;
+                /* output reject */
+                cout << "A " << aArr[i].ID << " -1 -1 Reject\n";
             }
         }
 
