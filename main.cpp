@@ -19,28 +19,12 @@ public:
     int ID;
     JobType type;
     int P, C, A;
-    int nextArrivalTime;
     bool Isaccept;
 };
 struct currentJob
 {
     int ID;
     int JobType;
-};
-struct periodic
-{
-    int P, C;
-    bool Isaccept;
-};
-struct aperiodic
-{
-    int A, C;
-    bool Isaccept;
-};
-struct sporadic
-{
-    int A, C;
-    bool Isaccept;
 };
 bool operator<(Job const &a, Job const &b)
 {
@@ -49,7 +33,7 @@ bool operator<(Job const &a, Job const &b)
     if (a.type == PERIODIC && b.type == PERIODIC) // Periodic job sort by deadline
         return a.P < b.P;
     else
-        return a.A < b.A;                         // Aparadic job sort by arrival time
+        return a.A < b.A; // Aparadic job sort by arrival time
 }
 
 int gcd(int a, int b)
@@ -120,7 +104,6 @@ int main(int argc, char *argv[])
                 newJob.P = itr2->GetObject()["P"].GetInt();
                 newJob.C = itr2->GetObject()["C"].GetInt(); // deadline = p next arrival time
                 newJob.A = 0;
-                newJob.nextArrivalTime = 0;
                 newJob.Isaccept = false;
                 allJobArr.push_back(newJob);
                 if (newJob.P < newJob.C) // reject directily (when P < C)
@@ -128,8 +111,8 @@ int main(int argc, char *argv[])
                 else
                 {
                     newJob.Isaccept = true;
-                    pArr.push_back(newJob);
                 }
+                pArr.push_back(newJob);
             }
         }
         idCount = 0;
@@ -144,7 +127,6 @@ int main(int argc, char *argv[])
                 newJob.P = 0;
                 newJob.C = itr2->GetObject()["C"].GetInt(); // deadline = a+c
                 newJob.A = itr2->GetObject()["A"].GetInt();
-                newJob.nextArrivalTime = 0;
                 newJob.Isaccept = false;
                 allJobArr.push_back(newJob);
                 aArr.push_back(newJob);
@@ -162,7 +144,6 @@ int main(int argc, char *argv[])
                 newJob.P = 0;
                 newJob.C = itr2->GetObject()["C"].GetInt(); // deadline = a+c
                 newJob.A = itr2->GetObject()["A"].GetInt();
-                newJob.nextArrivalTime = 0;
                 newJob.Isaccept = false;
                 allJobArr.push_back(newJob);
                 sArr.push_back(newJob);
@@ -182,7 +163,7 @@ int main(int argc, char *argv[])
         int hyperperiod = 1;
         for (int i = 0; i < pArr.size(); i++)
         {
-            if(pArr[i].Isaccept) // If the task is not accepted, we do not consider
+            if (pArr[i].Isaccept) // If the task is not accepted, we do not consider
             {
                 hyperperiod = lca(hyperperiod, pArr[i].P);
             }
@@ -203,7 +184,8 @@ int main(int argc, char *argv[])
         set<int> possiblefactor;
         for (int i = 0; i < pArr.size(); i++)
         {
-            if(pArr[i].Isaccept){ // If the task is not accepted, we do not consider
+            if (pArr[i].Isaccept)
+            { // If the task is not accepted, we do not consider
                 for (int j = 1; j <= pArr[i].P; j++)
                 {
                     if (pArr[i].P % j == 0)
@@ -222,11 +204,11 @@ int main(int argc, char *argv[])
             bool framesizeAccept = true;
             for (int i = 0; i < pArr.size(); i++)
             {
-                if(!pArr[i].Isaccept) //// If the task is not accepted, we do not consider
-                { 
+                if (!pArr[i].Isaccept) //// If the task is not accepted, we do not consider
+                {
                     continue;
                 }
-                if (!(2 * frameSize - gcd(frameSize, pArr[i].P) <= pArr[i].P)) 
+                if (!(2 * frameSize - gcd(frameSize, pArr[i].P) <= pArr[i].P))
                 {
                     framesizeAccept = false;
                 }
@@ -267,8 +249,8 @@ int main(int argc, char *argv[])
 
         for (int indexInpArr = 0; indexInpArr < pArr.size(); indexInpArr++)
         {
-            if(!pArr[indexInpArr].Isaccept) // If the task is not accepted, we do not consider
-                continue; 
+            if (!pArr[indexInpArr].Isaccept) // If the task is not accepted, we do not consider
+                continue;
             bool isAccept = true;
             // first check the perioidic task can be accept when every time it arrive
             for (int j = 0; j < hyperperiod; j += pArr[indexInpArr].P)
@@ -327,7 +309,7 @@ int main(int argc, char *argv[])
 
         for (auto &temp : pArr)
         {
-            cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", NEXT:" << temp.nextArrivalTime << ", type:" << temp.type << endl;
+            cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
             if (temp.Isaccept)
                 cout << "Accept\n";
             else
@@ -335,7 +317,7 @@ int main(int argc, char *argv[])
         }
         for (auto &temp : aArr)
         {
-            cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", NEXT:" << temp.nextArrivalTime << ", type:" << temp.type << endl;
+            cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
             if (temp.Isaccept)
                 cout << "Accept\n";
             else
@@ -343,7 +325,7 @@ int main(int argc, char *argv[])
         }
         for (auto &temp : sArr)
         {
-            cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", NEXT:" << temp.nextArrivalTime << ", type:" << temp.type << endl;
+            cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
             if (temp.Isaccept)
                 cout << "Accept\n";
             else
