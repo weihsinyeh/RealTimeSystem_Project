@@ -80,6 +80,8 @@ int main(int argc, char *argv[])
     vector<Job> aArr; // aperiodic task
     vector<Job> sArr; // sporadic task
     vector<Job> allJobArr;
+    // used frame table
+    vector<bool> used_time;
     // Iterate over the array of objects
     rapidjson::Value::ConstValueIterator itr;
     int indexOfTaskGroup = 0;
@@ -91,6 +93,7 @@ int main(int argc, char *argv[])
         aArr.clear();
         sArr.clear();
         allJobArr.clear();
+        used_time = vector<bool>(100, false);
         cout << "index of taskgroup : " << indexOfTaskGroup++ << endl; // MUST : #TaskGroup: index of TaskGroup, starting from 0
         idCount = 0;
         if (itr->GetObject()["Periodic"].IsArray())
@@ -301,10 +304,45 @@ int main(int argc, char *argv[])
         // sort sporaidic job with arrival time
         sort(sArr.begin(), sArr.end());
 
-        for (int i = 0; i < hyperperiod; i++)
+        // construct used time frame table
+        for (int i = 0; i < 100 / hyperperiod; i++)
         {
-            cout << "frame" << i << ":"
-                 << " ID:" << HyperPeriodJob[i].ID << ", type:" << HyperPeriodJob[i].JobType << endl;
+            for (int j = 0; j < hyperperiod; j++)
+            {
+                if (i * hyperperiod + j < 100, HyperPeriodJob[j].JobType != IDLE)
+                {
+                    used_time[i * hyperperiod + j] = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < sArr.size(); i++)
+        {
+            int start = sArr[i].A, end = start + sArr[i].C;
+            bool accept = true;
+            /*check enough time for using*/
+            for (int j = start; j < end && end < 100; j++)
+            {
+                if (used_time[j])
+                    accept = false;
+            }
+            if (accept && end < 100)
+            {
+                /* disable used time */
+                for (int j = start; j < end && end < 100; j++)
+                {
+                    used_time[j] = true;
+                }
+                /* IsAccept flag up */
+                sArr[i].Isaccept = true;
+                allJobArr[pArr.size() + aArr.size() + i].Isaccept = true;
+            }
+            else
+            {
+                /* IsAccept flag down */
+                sArr[i].Isaccept = false;
+                allJobArr[pArr.size() + aArr.size() + i].Isaccept = false;
+            }
         }
 
         for (auto &temp : pArr)
