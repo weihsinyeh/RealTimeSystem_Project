@@ -154,13 +154,13 @@ int main(int argc, char *argv[])
         }
 
         // Test : Just print the task array
-        cout << "Print the task array : " << endl;
-        for (int i = 0; i < pArr.size(); i++)
-            cout << "P" << i << " " << pArr[i].P << " " << pArr[i].C << endl;
-        for (int i = 0; i < aArr.size(); i++)
-            cout << "A" << i << " " << aArr[i].A << " " << aArr[i].C << endl;
-        for (int i = 0; i < sArr.size(); i++)
-            cout << "S" << i << " " << sArr[i].A << " " << sArr[i].C << endl;
+        // cout << "Print the task array : " << endl;
+        // for (int i = 0; i < pArr.size(); i++)
+        //     cout << "P" << i << " " << pArr[i].P << " " << pArr[i].C << endl;
+        // for (int i = 0; i < aArr.size(); i++)
+        //     cout << "A" << i << " " << aArr[i].A << " " << aArr[i].C << endl;
+        // for (int i = 0; i < sArr.size(); i++)
+        //     cout << "S" << i << " " << sArr[i].A << " " << sArr[i].C << endl;
 
         /** Step 1 : Hyperperioid **/ // V
         int hyperperiod = 1;
@@ -182,8 +182,8 @@ int main(int argc, char *argv[])
                 eMax = pArr[i].C;
             }
         }
-        cout << "maximum execution time : " << eMax << endl;
-        // Constraint 2 : Find pArr[i].P's factor
+        // cout << "maximum execution time : " << eMax << endl;
+        //  Constraint 2 : Find pArr[i].P's factor
         set<int> possiblefactor;
         for (int i = 0; i < pArr.size(); i++)
         {
@@ -345,31 +345,6 @@ int main(int argc, char *argv[])
             }
         }
 
-        for (auto &temp : pArr)
-        {
-            cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
-            if (temp.Isaccept)
-                cout << "Accept\n";
-            else
-                cout << "Not Accept\n";
-        }
-        for (auto &temp : aArr)
-        {
-            cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
-            if (temp.Isaccept)
-                cout << "Accept\n";
-            else
-                cout << "Not Accept\n";
-        }
-        for (auto &temp : sArr)
-        {
-            cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
-            if (temp.Isaccept)
-                cout << "Accept\n";
-            else
-                cout << "Not Accept\n";
-        }
-
         // TODO: schedule aperiodic job W
         //  for(int i = 0; i< 100; i ++){
         //      if( HyperPeriodJob[i % hyperperiod]. JobType )
@@ -377,33 +352,76 @@ int main(int argc, char *argv[])
         // sort aperiodic job with arrival time
         sort(aArr.begin(), aArr.end());
 
+        for (int i = 0; i < aArr.size(); i++)
+        {
+            int start = aArr[i].A, exec_time = aArr[i].C;
+            int time_remaining = 0;
+            /*check enough time for using*/
+            for (int j = start; j < 100; j++)
+            {
+                if (!used_time[j])
+                    time_remaining++;
+            }
+            if (time_remaining >= exec_time)
+            {
+                int already_used = 0;
+                /* disable used time */
+                for (int j = start; j < 100 && already_used < exec_time; j++)
+                {
+                    if (!used_time[j])
+                    {
+                        used_time[j] = true;
+                        already_used++;
+                    }
+                }
+                /* IsAccept flag up */
+                aArr[i].Isaccept = true;
+                allJobArr[pArr.size() + i].Isaccept = true;
+            }
+            else
+            {
+                /* IsAccept flag down */
+                aArr[i].Isaccept = false;
+                allJobArr[pArr.size() + i].Isaccept = false;
+            }
+        }
+
         cout << endl;
     }
     cout << "-1" << endl;
     return 0;
 }
 // print task state
-//  for (auto &temp : pArr)
-//  {
-//      cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", NEXT:" << temp.nextArrivalTime << ", type:" << temp.type << endl;
-//      if (temp.Isaccept)
-//          cout << "Accept\n";
-//      else
-//          cout << "Not Accept\n";
-//  }
-//  for (auto &temp : aArr)
-//  {
-//      cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", NEXT:" << temp.nextArrivalTime << ", type:" << temp.type << endl;
-//      if (temp.Isaccept)
-//          cout << "Accept\n";
-//      else
-//          cout << "Not Accept\n";
-//  }
-//  for (auto &temp : sArr)
-//  {
-//      cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", NEXT:" << temp.nextArrivalTime << ", type:" << temp.type << endl;
-//      if (temp.Isaccept)
-//          cout << "Accept\n";
-//      else
-//          cout << "Not Accept\n";
-//  }
+// for (auto &temp : allJobArr)
+// {
+//     cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
+//     if (temp.Isaccept)
+//         cout << "Accept\n";
+//     else
+//         cout << "Not Accept\n";
+// }
+// cout << "\n";
+// for (auto &temp : pArr)
+// {
+//     cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
+//     if (temp.Isaccept)
+//         cout << "Accept\n";
+//     else
+//         cout << "Not Accept\n";
+// }
+// for (auto &temp : aArr)
+// {
+//     cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
+//     if (temp.Isaccept)
+//         cout << "Accept\n";
+//     else
+//         cout << "Not Accept\n";
+// }
+// for (auto &temp : sArr)
+// {
+//     cout << "P:" << temp.P << ", A:" << temp.A << ", C: " << temp.C << ", ID:" << temp.ID << ", type:" << temp.type << endl;
+//     if (temp.Isaccept)
+//         cout << "Accept\n";
+//     else
+//         cout << "Not Accept\n";
+// }
