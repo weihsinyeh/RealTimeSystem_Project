@@ -8,8 +8,39 @@ F74093825 資訊系大三 王碩輔
 
 F74109016 資訊系大三 葉惟欣
 ## Document your progress, thought process : (2%)
+### April 25th
+1. Allocating individual tasks 
+2. Discussing regarding the program architecture : should be preemptive
+3. Frame size calculation and implementation.
+
+Progress : 0%
+
+### April 27th
+1. frame size calculation done 
+Progress : 10%
+
+### May 9th
+1.Discussing test data and implementation approach
+Progress : 40%
+
+### May 13th
+1.Sharing of completed portions
+Progress : 70%
+
+### May 18th
+1. Discussing different results of test data and order of tasks
+2. Removing preemptive scheduling and replacing with non-preemptive scheduling
+3. Confirming task details and rewriting partial code
+Progress : 85%
+
+### May 20th
+1. generating test data for testing the program
+Progress : 100%
 ## Explain the logic of your scheduler : (2%)
+First, calculate the hyperperiod and arrange the periodic tasks in order of priority. Then, arrange the aperiodic tasks based on their arrival time. If there is any remaining time available, insert the sporadic tasks accordingly.
 ## Things you learned : (2%)
+
+
 
 ### Problem we encounter :
 #### **問題一 : 想要確認 output的內容**
