@@ -182,71 +182,7 @@ int main(int argc, char *argv[])
                 hyperperiod = lca(hyperperiod, pArr[i].P);
             }
         }
-        /***********************************************************/
-        /** Step 2 : Caluculate appropriate Frame size **/
-        // Constraint 1 : Calculate the maximum of execution time //V
-        int eMax = -1;
-        for (int i = 0; i < pArr.size(); i++)
-        {
-            if (pArr[i].Isaccept && pArr[i].C > eMax) // If the task is not accepted, we do not consider
-            {
-                eMax = pArr[i].C;
-            }
-        }
-        // cout << "maximum execution time : " << eMax << endl;
-        //  Constraint 2 : Find pArr[i].P's factor
-        set<int> possiblefactor;
-        for (int i = 0; i < pArr.size(); i++)
-        {
-            if (pArr[i].Isaccept)
-            { // If the task is not accepted, we do not consider
-                for (int j = 1; j <= pArr[i].P; j++)
-                {
-                    if (pArr[i].P % j == 0)
-                        possiblefactor.insert(j);
-                }
-            }
-        }
-        // Constraint 3 : Check deadline
-        // iterator the set
-        set<int>::iterator it;
-        set<int> correctfactor;
-
-        for (it = possiblefactor.begin(); it != possiblefactor.end(); it++)
-        {
-            int frameSize = *it;
-            bool framesizeAccept = true;
-            for (int i = 0; i < pArr.size(); i++)
-            {
-                if (!pArr[i].Isaccept) //// If the task is not accepted, we do not consider
-                {
-                    continue;
-                }
-                if (!(2 * frameSize - gcd(frameSize, pArr[i].P) <= pArr[i].P))
-                {
-                    framesizeAccept = false;
-                }
-            }
-            if (framesizeAccept)
-            {
-                correctfactor.insert(frameSize);
-            }
-        }
-
-        /***********************************************************/
-        // TODO: frameSize slice
-
-        // Test : Just print the correct framesize need to consider later
-        // cout << "possible frameSize : " << endl;
-        // int maxFrameSize = -1;
-        // for (it = correctfactor.begin(); it != correctfactor.end(); it++)
-        // {
-        //     int frameSize = *it;
-        //     if (frameSize > maxFrameSize)
-        //         maxFrameSize = frameSize;
-        //     cout << frameSize << endl;
-        // }
-
+        
         // Schedule periodic job in HyperPerioid
         // Initialize HyperPeriodJob array every time moment is idle
         vector<struct currentJob> HyperPeriodJob; // 50 element
@@ -260,26 +196,39 @@ int main(int argc, char *argv[])
         // I schedule the shortest period(earliest deadline) job first
         // Thus, I sort periodic job by the early deadline first
         sort(pArr.begin(), pArr.end());
-
+        vector<int> starttime;
         for (int indexInpArr = 0; indexInpArr < pArr.size(); indexInpArr++)
         {
-            if (!pArr[indexInpArr].Isaccept) // If the task is not accepted, we do not consider
-                continue;
+            if(!pArr[indexInpArr].Isaccept) // If the task is not accepted, we do not consider
+                continue; 
             bool isAccept = true;
-            // first check the perioidic task can be accept when every time it arrive
-            for (int j = 0; j < hyperperiod; j += pArr[indexInpArr].P)
+            for (int j = 0; j <= hyperperiod - pArr[indexInpArr].P; j += pArr[indexInpArr].P)
             {
                 int curTime = j;
                 int executionTime = 0;
+                bool start = true;
                 while (executionTime < pArr[indexInpArr].C)
-                { // V
+                { 
+                    if(curTime == hyperperiod) break;
                     if (curTime >= j + pArr[indexInpArr].P)
                     {
                         isAccept = false;
                         break;
                     }
-                    if (HyperPeriodJob[curTime++].JobType != IDLE)
+                    if (HyperPeriodJob[curTime].JobType != IDLE){
+                        executionTime = 0 ;
+                        curTime++;
                         continue;
+                    }
+                    if(executionTime == 0){
+                        if(start){
+                            start = false;
+                            starttime.push_back(curTime);
+                        }
+                        else
+                            starttime[starttime.size()-1] = curTime;
+                    }
+                    curTime++;
                     executionTime++;
                 }
                 if (!isAccept)
@@ -289,20 +238,12 @@ int main(int argc, char *argv[])
             {
                 allJobArr[pArr[indexInpArr].ID].Isaccept = true;
                 // record the job in HyperPeriodJob array
-                for (int j = 0; j < hyperperiod; j += pArr[indexInpArr].P)
+                for (int j = 0; j < starttime.size(); j ++)
                 {
-                    int executionTime = 0;
-                    int curTime = j;
-                    while (executionTime < pArr[indexInpArr].C)
+                    for(int k = starttime[j]; k < starttime[j] + pArr[indexInpArr].C; k++)
                     {
-                        if (HyperPeriodJob[curTime].JobType != IDLE)
-                        {
-                            curTime++;
-                            continue;
-                        }
-                        executionTime++;
-                        HyperPeriodJob[curTime].JobType = PERIODIC;
-                        HyperPeriodJob[curTime].ID = pArr[indexInpArr].ID;
+                        HyperPeriodJob[k].JobType = PERIODIC;
+                        HyperPeriodJob[k].ID = pArr[indexInpArr].ID;
                     }
                 }
             }
@@ -310,8 +251,14 @@ int main(int argc, char *argv[])
             {
                 allJobArr[pArr[indexInpArr].ID].Isaccept = false;
             }
+            starttime.clear();
         }
-        // TODO: schedule sporadic job
+        // for (int i = 0; i < hyperperiod; i++)
+        // {
+        //     cout << "frame" << i << ":"
+        //          << " ID:" << HyperPeriodJob[i].ID << ", type:" << HyperPeriodJob[i].JobType << endl;
+        // }
+
         // sort sporaidic job with arrival time
         sort(sArr.begin(), sArr.end());
 
@@ -358,7 +305,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        // TODO: schedule aperiodic job W
+
         //  for(int i = 0; i< 100; i ++){
         //      if( HyperPeriodJob[i % hyperperiod]. JobType )
         //  }
