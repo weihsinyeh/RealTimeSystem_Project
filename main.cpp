@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
                 hyperperiod = lca(hyperperiod, pArr[i].P);
             }
         }
-        
+
         // Schedule periodic job in HyperPerioid
         // Initialize HyperPeriodJob array every time moment is idle
         vector<struct currentJob> HyperPeriodJob; // 50 element
@@ -199,8 +199,8 @@ int main(int argc, char *argv[])
         vector<int> starttime;
         for (int indexInpArr = 0; indexInpArr < pArr.size(); indexInpArr++)
         {
-            if(!pArr[indexInpArr].Isaccept) // If the task is not accepted, we do not consider
-                continue; 
+            if (!pArr[indexInpArr].Isaccept) // If the task is not accepted, we do not consider
+                continue;
             bool isAccept = true;
             for (int j = 0; j <= hyperperiod - pArr[indexInpArr].P; j += pArr[indexInpArr].P)
             {
@@ -208,25 +208,29 @@ int main(int argc, char *argv[])
                 int executionTime = 0;
                 bool start = true;
                 while (executionTime < pArr[indexInpArr].C)
-                { 
-                    if(curTime == hyperperiod) break;
+                {
+                    if (curTime == hyperperiod)
+                        break;
                     if (curTime >= j + pArr[indexInpArr].P)
                     {
                         isAccept = false;
                         break;
                     }
-                    if (HyperPeriodJob[curTime].JobType != IDLE){
-                        executionTime = 0 ;
+                    if (HyperPeriodJob[curTime].JobType != IDLE)
+                    {
+                        executionTime = 0;
                         curTime++;
                         continue;
                     }
-                    if(executionTime == 0){
-                        if(start){
+                    if (executionTime == 0)
+                    {
+                        if (start)
+                        {
                             start = false;
                             starttime.push_back(curTime);
                         }
                         else
-                            starttime[starttime.size()-1] = curTime;
+                            starttime[starttime.size() - 1] = curTime;
                     }
                     curTime++;
                     executionTime++;
@@ -238,9 +242,9 @@ int main(int argc, char *argv[])
             {
                 allJobArr[pArr[indexInpArr].ID].Isaccept = true;
                 // record the job in HyperPeriodJob array
-                for (int j = 0; j < starttime.size(); j ++)
+                for (int j = 0; j < starttime.size(); j++)
                 {
-                    for(int k = starttime[j]; k < starttime[j] + pArr[indexInpArr].C; k++)
+                    for (int k = starttime[j]; k < starttime[j] + pArr[indexInpArr].C; k++)
                     {
                         HyperPeriodJob[k].JobType = PERIODIC;
                         HyperPeriodJob[k].ID = pArr[indexInpArr].ID;
@@ -267,7 +271,7 @@ int main(int argc, char *argv[])
         {
             for (int j = 0; j < hyperperiod; j++)
             {
-                if (i * hyperperiod + j < 100, HyperPeriodJob[j].JobType != IDLE)
+                if (i * hyperperiod + j < 100 && HyperPeriodJob[j].JobType != IDLE)
                 {
                     used_time[i * hyperperiod + j] = true;
                 }
@@ -305,7 +309,6 @@ int main(int argc, char *argv[])
             }
         }
 
-
         //  for(int i = 0; i< 100; i ++){
         //      if( HyperPeriodJob[i % hyperperiod]. JobType )
         //  }
@@ -315,28 +318,37 @@ int main(int argc, char *argv[])
         for (int i = 0; i < aArr.size(); i++)
         {
             int start = aArr[i].A, exec_time = aArr[i].C;
-            int time_remaining = 0;
             /*check enough time for using*/
-            int j;
-            for (j = start; j < 100; j++)
+            int j, k;
+            bool enough = false;
+            for (j = start; j < 100 - exec_time + 1; j++)
             {
-                if (!used_time[j])
-                    time_remaining++;
-            }
-            /* modify complete time by soft deadline */
-            aArr[i].complete_time = j;
-            if (time_remaining >= exec_time)
-            {
-                int already_used = 0;
-                /* disable used time */
-                for (int j = start; j < 100 && already_used < exec_time; j++)
+                enough = true;
+                for (k = 0; k < exec_time; k++)
                 {
-                    if (!used_time[j])
+                    if (used_time[j + k])
                     {
-                        used_time[j] = true;
-                        already_used++;
+                        enough = false;
+                        break;
                     }
                 }
+                /* disable used time */
+                if (enough)
+                {
+                    for (k = 0; k < exec_time; k++)
+                    {
+                        used_time[j + k] = true;
+                    }
+                    break;
+                }
+            }
+            /* modify complete time and start time by soft deadline */
+            aArr[i].A = j;
+            allJobArr[pArr.size() + i].A = j;
+            aArr[i].complete_time = j + k;
+            allJobArr[pArr.size() + i].complete_time = j + k;
+            if (enough)
+            {
                 /* IsAccept flag up */
                 aArr[i].Isaccept = true;
                 allJobArr[pArr.size() + i].Isaccept = true;
