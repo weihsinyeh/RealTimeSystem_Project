@@ -41,6 +41,7 @@ First, calculate the hyperperiod and arrange the periodic tasks in order of prio
 此外因為作業說明時有說明過，排程問題簡化的假設為單一核心，無context-switch成本，non-preemptable，因此不存在frame size的問題。
 接下來我先將task們排在hyperperiod中，判斷每個task 在不被其他task preempt的情況下排入，也因此當我看到一個時間單位可以排時，我會繼續檢查直到他所有所需的時間單位都可排入，才將periodic task。
 如下圖下方的排法才是正確的
+
 ![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/124a2397-f3fa-4dd3-b7a9-367150f77631)
 
 Then, arrange the aperiodic tasks based on their arrival time. If there is any remaining time available, insert the sporadic tasks accordingly.
