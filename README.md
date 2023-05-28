@@ -12,6 +12,11 @@ F64096198 資訊工程學系大三 李展瑋     Role : 負責寫sporadic task �
 
 F74093825 資訊工程學系大三 王碩輔     Role : 負責檢查測資與寫document也就是report.pdf 
 
+
+## How to build your source 
+
+(我會截圖)
+
 ## Document your progress, thought process : (2%)
 ### April 25th
 1. Allocating individual tasks 
