@@ -1,5 +1,7 @@
 # RealTimeSystem_Project
 
+## GitHub Link : https://github.com/weihsinyeh/RealTimeSystem_Project/
+
 ## Group Info : (2%)
 
 Leader : 
@@ -17,7 +19,9 @@ F74093825 資訊工程學系大三 王碩輔     Role : 負責檢查測資與寫
 
 (我會截圖)
 
-## Document your progress, thought process : (2%)
+## Input / Output in your own test
+
+## Document your progress, thought process : (Progress / thought process) (2%)
 ### April 25th
 1. Allocating individual tasks 
 2. Discussing regarding the program architecture : should be preemptive
@@ -46,7 +50,7 @@ Progress : 85%
 ### May 20th
 1. generating test data for testing the program
 Progress : 100%
-## Explain the logic of your scheduler : (2%)
+## Explain the logic of your scheduler : (Logic Of Scheduler) (2%)
 First, calculate the hyperperiod and arrange the periodic tasks in order of priority. 
 此外因為作業說明時有說明過，排程問題簡化的假設為單一核心，無context-switch成本，non-preemptable，因此不存在frame size的問題。
 接下來我先將task們排在hyperperiod中，判斷每個task 在不被其他task preempt的情況下排入，也因此當我看到一個時間單位可以排時，我會繼續檢查直到他所有所需的時間單位都可排入，才將periodic task。
