@@ -2,11 +2,16 @@
 
 ## Group Info : (2%)
 
-F64096198 資訊系大三 李展瑋
+Leader : 
 
-F74093825 資訊系大三 王碩輔
+F74109016 資訊工程學系大三 葉惟欣     Role : 負責寫 讀寫json檔案，與periodic task的排程 
 
-F74109016 資訊系大三 葉惟欣
+Member : 
+
+F64096198 資訊工程學系大三 李展瑋     Role : 負責寫sporadic task 與 aperiodic task的排程
+
+F74093825 資訊工程學系大三 王碩輔     Role : 負責檢查測資與寫document也就是report.pdf 
+
 ## Document your progress, thought process : (2%)
 ### April 25th
 1. Allocating individual tasks 
