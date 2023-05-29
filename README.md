@@ -26,8 +26,6 @@ CPP
 
 ![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/8483cb7f-a8ee-49a1-8a3a-de54433ab603)
 
-![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/62036f04-3ca6-4469-a54d-6a6302bbba96)
-
 
 ![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/674fe5b8-dc07-47dd-8828-576f05bb1f51)
 
