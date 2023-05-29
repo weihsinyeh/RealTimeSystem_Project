@@ -17,9 +17,26 @@ F74093825 資訊工程學系大三 王碩輔     Role : 負責檢查測資與寫
 
 ## How to build your source 
 
-(我會截圖)
+Step 1 :
+
+command : make
+
+Goal : Compile main.cpp create executable file main
+
+Step 2 :
+
+execute main file with files in inputData folder ,we test then output the result to the outputData folder
+
+command : ./main inputData/example1.json > outputData/example_out1
+
+command : ./main inputData/example2.json > outputData/example_out2
+
+command : ./main inputData/example3.json > outputData/example_out3
+
+then three outputfile will in outputData 
 
 ## Input / Output in your own test
+
 
 ## Document your progress, thought process : (Progress / thought process) (2%)
 ### April 25th

@@ -1,0 +1,39 @@
+2
+0
+P 0 -1 -1 Reject
+S 1 -1 -1 Reject
+A 0 -1 -1 Reject
+A 2 -1 -1 Reject
+A 0 1 2 Complete
+A 1 12 16 Complete
+A 2 19 22 Complete
+S 5 39 48 Complete
+S 1 45 48 Complete
+S 3 52 53 Complete
+S 6 77 78 Complete
+S 4 87 94 Complete
+A 4 94 95 Complete
+S 0 97 98 Complete
+1 0.333333 0.142857 
+1
+P 0 -1 -1 Reject
+P 1 -1 -1 Reject
+S 8 -1 -1 Reject
+S 9 -1 -1 Reject
+S 2 -1 -1 Reject
+S 4 -1 -1 Reject
+S 0 -1 -1 Reject
+S 7 -1 -1 Reject
+S 1 -1 -1 Reject
+S 5 -1 -1 Reject
+S 6 -1 -1 Reject
+S 3 -1 -1 Reject
+A 2 -1 -1 Reject
+A 0 -1 -1 Reject
+A 4 -1 -1 Reject
+A 3 -1 -1 Reject
+A 1 -1 -1 Reject
+A 5 -1 -1 Reject
+P 2 0 2 Complete
+0.666667 1 1 
+-1
