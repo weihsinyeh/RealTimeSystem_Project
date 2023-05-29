@@ -27,11 +27,11 @@ Step 2 :
 
 execute main file with files in inputData folder ,we test then output the result to the outputData folder
 
-command : ./main inputData/example1.json > outputData/example_out1
+command : ./main inputData/example1.json > outputData/example_output_1
 
-command : ./main inputData/example2.json > outputData/example_out2
+command : ./main inputData/example2.json > outputData/example_output_2
 
-command : ./main inputData/example3.json > outputData/example_out3
+command : ./main inputData/example3.json > outputData/example_output_3
 
 then three outputfile will in outputData 
 
