@@ -35,8 +35,14 @@ command : ./main inputData/example3.json > outputData/example_out3
 
 then three outputfile will in outputData 
 
-## Input / Output in your own test
+Step 2 : (alternative way)
 
+command : ./validate.sh
+
+## Input / Output in your own test
+we have two folder : inputData and outputData
+
+There are three test JSON file in inputData.We will output our result to the outputData folder.
 
 ## Document your progress, thought process : (Progress / thought process) (2%)
 ### April 25th
