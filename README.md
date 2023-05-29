@@ -43,10 +43,13 @@ command : ./validate.sh
 
 ## Input / Output in your own test
 we have two folder : inputData and outputData
+
 ![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/8443dd6b-a04a-425b-b6e6-f75d07eb3ca0)
 
 There are three test JSON file in inputData.We will output our result to the outputData folder.
+
 ![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/c3c2f9ca-3bb7-44a2-aa78-7e38c80b445f)
+
 ![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/16e7c7ce-69d9-4a26-807d-ba5b91262a6e)
 
 ## Document your progress, thought process : (Progress / thought process) (2%)
