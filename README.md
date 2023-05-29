@@ -16,6 +16,19 @@ F74093825 資訊工程學系大三 王碩輔     Role : 負責檢查測資與寫
 
 
 ## How to build your source 
+實作語言 : 
+
+CPP
+
+執行方法 : 
+
+因為我們是實作語言是透過CPP檔，所以我們會有一個folder : rapidjson，用來支援CPP檔讀取JSON檔的功能。
+
+![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/8483cb7f-a8ee-49a1-8a3a-de54433ab603)
+
+![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/62036f04-3ca6-4469-a54d-6a6302bbba96)
+
+
 ![image](https://github.com/weihsinyeh/RealTimeSystem_Project/assets/90430653/674fe5b8-dc07-47dd-8828-576f05bb1f51)
 
 
