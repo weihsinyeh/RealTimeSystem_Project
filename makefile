@@ -1,4 +1,4 @@
 all:
 	g++ main.cpp -o main
 clean:
-	rm -f main.cpp
+	rm -f main
